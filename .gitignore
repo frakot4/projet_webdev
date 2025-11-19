@@ -1,0 +1,19 @@
+# Ignorer l'environnement virtuel Python
+venv_proj/
+
+# Ignorer les fichiers de configuration de l'application
+.env
+
+# Fichiers Python à ignorer
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Fichiers temporaires
+*.log
+*.tmp
+
+# Environnements/IDE
+.vscode/
+.idea/
