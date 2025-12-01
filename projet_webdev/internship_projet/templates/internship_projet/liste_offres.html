@@ -1,0 +1,46 @@
+{% extends 'internship_projet/base.html' %}
+{% load static %}
+
+{% block title %}Nos Offres{% endblock %}
+{% block header_title %}Opportunités{% endblock %}
+{% block header_subtitle %}Découvrez les dernières offres de stage{% endblock %}
+
+{% block content %}
+<section class="page-section bg-light" id="portfolio">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Liste des offres</h2>
+            <h3 class="section-subheading text-muted">Postulez dès maintenant.</h3>
+        </div>
+        <div class="row">
+            {% for offre in offres %}
+            <div class="col-lg-4 col-sm-6 mb-4">
+                <div class="portfolio-item">
+                    <a class="portfolio-link" href="/offres/{{ offre.IDOffre }}/">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                        </div>
+                        <img class="img-fluid" src="{% static 'internship_projet/assets/img/portfolio/1.jpg' %}"
+                            alt="..." />
+                    </a>
+                    <div class="portfolio-caption">
+                        <div class="portfolio-caption-heading">{{ offre.Titre }}</div>
+                        <div class="portfolio-caption-subheading text-muted">{{ offre.Organisme }}</div>
+                        <p class="mt-2 text-primary">{{ offre.Etat }}</p>
+
+                        <div class="btn-group mt-2">
+                            <a href="/offres/{{ offre.IDOffre }}/update/" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="/offres/{{ offre.IDOffre }}/delete/" class="btn btn-danger btn-sm">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>Aucune offre disponible.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'internship_projet/base.html' %}
+
+{% block title %}Déposer une offre{% endblock %}
+{% block header_title %}Recrutement{% endblock %}
+{% block header_subtitle %}Espace Entreprise{% endblock %}
+
+{% block content %}
+<section class="page-section" id="contact">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Nouvelle Offre</h2>
+            <h3 class="section-subheading text-muted">Remplissez ce formulaire pour publier votre stage.</h3>
+        </div>
+
+        <form id="contactForm" method="post" action="">
+            {% csrf_token %}
+            <div class="row align-items-stretch mb-5">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label class="text-white">Organisme</label>
+                        {{ form.Organisme }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Contact</label>
+                        {{ form.NomContact }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Email</label>
+                        {{ form.EmailContact }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Titre du stage</label>
+                        {{ form.Titre }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group form-group-textarea mb-md-0 h-100">
+                        <label class="text-white">Détails</label>
+                        {{ form.Detail }}
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-primary btn-xl text-uppercase" type="submit">Envoyer l'offre</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
