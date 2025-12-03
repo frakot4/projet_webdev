@@ -4,8 +4,8 @@ from internship_projet.forms import OffreCreationForm, OffreModificationForm
 
 # READ (Liste) - Accessible aux étudiants/responsables
 def liste_offres(request):
-    # On récupère toutes les offres
-    lesOffres = Offre.objects.all().order_by('-DateDepot')
+    # On ne récupère que les offres validées
+    lesOffres = Offre.objects.order_by('-DateDepot')
     return render(request, 'internship_projet/liste_offres.html', {'offres': lesOffres})
 
 # READ (Détail)
