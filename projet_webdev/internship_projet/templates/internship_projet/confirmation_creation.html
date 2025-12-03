@@ -1,0 +1,37 @@
+{% extends 'internship_projet/base.html' %}
+
+{% block title %}Offre créée avec succès{% endblock %}
+
+{# Le header s'affichera en haut avec l'image de fond #}
+{% block header_title %}Succès{% endblock %}
+{% block header_subtitle %}Votre offre a bien été enregistrée{% endblock %}
+
+{% block content %}
+<section class="page-section" id="confirmation">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <span class="fa-stack fa-4x mb-4">
+                    <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fas fa-check fa-stack-1x fa-inverse"></i>
+                </span>
+                
+                <h4 class="my-3">Merci de votre contribution !</h4>
+                <p class="text-muted mb-5">
+                    Votre offre de stage a été ajoutée à notre base de données.<br>
+                    Elle est actuellement en attente de validation par un responsable pédagogique avant d'être visible par les étudiants.
+                </p>
+
+                <div class="mt-4">
+                    <a href="{% url 'creer_offre' %}" class="btn btn-primary btn-xl text-uppercase me-3">
+                        <i class="fas fa-plus me-2"></i> Déposer une autre offre
+                    </a>
+                    <a href="{% url 'liste_offres' %}" class="btn btn-dark btn-xl text-uppercase">
+                        <i class="fas fa-list me-2"></i> Retour à la liste
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
