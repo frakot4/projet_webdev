@@ -1,0 +1,59 @@
+{% extends 'internship_projet/base.html' %}
+
+{% block title %}Modification : {{ offre.Titre }}{% endblock %}
+
+{% block header_title %}Modifier l'offre{% endblock %}
+{% block header_subtitle %}Ajustez les détails ou changez le statut ({{ offre.Titre }}){% endblock %}
+
+{% block content %}
+<section class="page-section" id="contact">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Modification de l'offre</h2>
+            <h3 class="section-subheading text-muted">Offre ID: {{ offre.IDOffre }} | Organisme: {{ offre.Organisme }}</h3>
+        </div>
+        
+        <form id="modificationForm" method="post" action="{% url 'modifier_offre' offre_id=offre.IDOffre %}">
+            {% csrf_token %}
+            
+            <div class="row align-items-stretch mb-5">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label class="text-white">Organisme</label>
+                        {{ form.Organisme }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Nom du contact</label>
+                        {{ form.NomContact }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Email</label>
+                        {{ form.EmailContact }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Titre du stage</label>
+                        {{ form.Titre }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="text-white">Statut de l'offre</label>
+                        {{ form.Etat }}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group form-group-textarea mb-md-0 h-100">
+                        <label class="text-white">Détails du stage</label>
+                        {{ form.Detail }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button class="btn btn-primary btn-xl text-uppercase" type="submit">
+                    <i class="fas fa-save me-1"></i> Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

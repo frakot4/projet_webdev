@@ -1,0 +1,61 @@
+{% extends 'internship_projet/base.html' %}
+
+{% block title %}Détail de l'offre : {{ offre.Titre }}{% endblock %}
+
+{% block header_title %}{{ offre.Titre }}{% endblock %}
+{% block header_subtitle %}{{ offre.Organisme }}{% endblock %}
+
+{% block content %}
+<section class="page-section bg-light" id="offre-detail">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="modal-body text-center">
+                    
+                    <h2 class="text-uppercase mb-4">{{ offre.Titre }}</h2> 
+
+                    <p class="item-intro text-muted">
+                         Publié par {{ offre.Organisme }}    le {{ offre.DateDepot|date:"d F Y à H:i" }}  
+                    </p>
+                    
+                    <hr class="mb-5">
+
+                    <h4 class="text-uppercase text-primary mb-3">Détail du poste</h4>
+                    <p class="large text-muted mb-5">
+                         {{ offre.Detail }}  
+                    </p>
+
+                    <ul class="list-inline my-4">
+                        <li class="list-inline-item mx-4">
+                            <strong class="text-dark">Statut actuel :</strong> 
+                            <span class="badge {% if offre.Etat == 'Validée' %}bg-success{% elif offre.Etat == 'En attente' %}bg-warning text-dark{% elif offre.Etat == 'Refusée' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                 {{ offre.Etat }}  
+                            </span>
+                        </li>
+                        <li class="list-inline-item mx-4">
+                             <strong class="text-dark">Contact :</strong> {{ offre.NomContact }}  
+                        </li>
+                        <li class="list-inline-item mx-4">
+                             <strong class="text-dark">Email contact :</strong> {{ offre.EmailContact }}  
+                        </li>
+                    </ul>
+
+                    <div class="mt-5">
+                        <a href="{% url 'modifier_offre' offre_id=offre.IDOffre %}" class="btn btn-primary btn-xl text-uppercase">
+                            <i class="fas fa-edit me-1"></i> Modifier l'offre
+                        </a>
+                        <a href="{% url 'supprimer_offre' offre_id=offre.IDOffre %}" class="btn btn-danger btn-xl text-uppercase ms-3">
+                            <i class="fas fa-trash me-1"></i> Supprimer
+                        </a>
+                    </div>
+                    
+                    <a class="btn btn-link mt-4" href="{% url 'liste_offres' %}">
+                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste des offres
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
