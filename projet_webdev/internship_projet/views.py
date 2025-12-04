@@ -18,7 +18,6 @@ def creer_offre(request):
             return render(request, 'internship_projet/confirmation_creation.html')
     else:
         form = OffreCreationForm()
-    
     return render(request, 'internship_projet/formulaire_creation_offre.html', {'form': form})
 
 
