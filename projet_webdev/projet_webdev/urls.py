@@ -16,11 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView  # Import nécessaire
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Rediriger la racine vers l'application internship_projet
-    path('', include('internship_projet.urls')), 
+    
+    # Redirection de la racine (/) vers /comptes/login/
+    path('', RedirectView.as_view(url='/comptes/login/', permanent=False)),
+
+    # Vos autres inclusions d'URL
+    path('offres/', include('internship_projet.urls')), # On déplace l'app étudiant vers /offres/
     path('comptes/', include('internship_projet_comptes.urls')),
     path('profs/', include('internship_projet_gestion_profs.urls')),
 ]
