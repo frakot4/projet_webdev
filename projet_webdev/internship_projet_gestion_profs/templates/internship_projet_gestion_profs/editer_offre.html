@@ -1,0 +1,78 @@
+{% extends 'internship_projet/base.html' %}
+
+{% block title %}Gérer l'offre{% endblock %}
+
+{% block header_title %}Modération{% endblock %}
+{% block header_subtitle %}Offre : {{ offre.Titre }}{% endblock %}
+
+{% block content %}
+<section class="page-section bg-light" id="moderation">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <h2 class="section-heading text-uppercase">Validation de l'offre</h2>
+                    <p class="text-muted">Entreprise : <strong>{{ offre.Organisme }}</strong> | Contact : {{ offre.NomContact }}</p>
+                </div>
+
+                <div class="card shadow border-0">
+                    <div class="card-body p-5">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            {% if form.errors %}
+                                <div class="alert alert-danger">Veuillez corriger les erreurs ci-dessous.</div>
+                            {% endif %}
+
+                            <h5 class="text-uppercase text-primary mb-3">État de l'offre</h5>
+                            <div class="mb-4 p-3 bg-warning bg-opacity-10 border border-warning rounded">
+                                <label class="form-label fw-bold">Statut de validation</label>
+                                {{ form.Etat }} 
+                                <div class="form-text">Passez l'état à <strong>"Validée"</strong> pour que les étudiants puissent la voir.</div>
+                            </div>
+
+                            <h5 class="text-uppercase text-muted mt-4 mb-3">Détails du contenu</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Organisme</label>
+                                    {{ form.Organisme }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Titre du poste</label>
+                                    {{ form.Titre }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nom Contact</label>
+                                    {{ form.NomContact }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email Contact</label>
+                                    {{ form.EmailContact }}
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Description détaillée</label>
+                                {{ form.Detail }}
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-5">
+                                <a href="{% url 'dashboard_profs' %}" class="btn btn-outline-dark">
+                                    <i class="fas fa-arrow-left me-2"></i>Annuler
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-xl text-uppercase">
+                                    <i class="fas fa-save me-2"></i> Enregistrer les modifications
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

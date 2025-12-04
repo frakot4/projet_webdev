@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'internship_projet',
     'internship_projet_comptes', 
+    'internship_projet_gestion_profs',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# settings.py
+LOGIN_REDIRECT_URL = 'dispatch_login' # Nom de l'URL qui pointe vers la vue ci-dessus

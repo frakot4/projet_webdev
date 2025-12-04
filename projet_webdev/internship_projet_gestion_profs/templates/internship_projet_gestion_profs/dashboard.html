@@ -1,0 +1,71 @@
+{% extends 'internship_projet/base.html' %}
+{% load static %}
+
+{% block title %}Tableau de Bord Responsable{% endblock %}
+
+{% block header_title %}Espace Responsable{% endblock %}
+{% block header_subtitle %}Gestion et Validation des Offres{% endblock %}
+{% block header_class %}sub-page{% endblock %}
+
+{% block content %}
+<section class="page-section" id="dashboard">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-heading text-uppercase">Suivi des Offres</h2>
+            <h3 class="section-subheading text-muted">Validez, refusez ou modifiez les offres déposées.</h3>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Date</th>
+                                <th>Titre du poste</th>
+                                <th>Entreprise</th>
+                                <th class="text-center">Statut Actuel</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for offre in offres %}
+                            <tr>
+                                <td>{{ offre.DateDepot|date:"d/m/Y" }}</td>
+                                <td class="fw-bold">{{ offre.Titre }}</td>
+                                <td>{{ offre.Organisme }}</td>
+                                <td class="text-center">
+                                    {% if offre.Etat == 'En attente' %}
+                                        <span class="badge bg-warning text-dark">En attente</span>
+                                    {% elif offre.Etat == 'Validée' %}
+                                        <span class="badge bg-success">Validée</span>
+                                    {% elif offre.Etat == 'Refusée' %}
+                                        <span class="badge bg-danger">Refusée</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ offre.Etat }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'valider_offre' offre.IDOffre %}" class="btn btn-primary btn-sm" title="Éditer / Valider">
+                                            <i class="fas fa-edit"></i> Gérer
+                                        </a>
+                                        <a href="{% url 'supprimer_offre_prof' offre.IDOffre %}" class="btn btn-danger btn-sm" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette offre ?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">Aucune offre à gérer pour le moment.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
