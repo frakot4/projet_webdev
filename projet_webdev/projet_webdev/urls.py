@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Rediriger la racine vers l'application internship_projet
     path('', include('internship_projet.urls')), 
+    path('comptes/', include('internship_projet_comptes.urls')),
 ]
