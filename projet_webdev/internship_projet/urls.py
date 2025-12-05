@@ -11,4 +11,6 @@ urlpatterns = [
     
     # Cela donnera : /offres/create/
     path('create/', views.creer_offre, name='creer_offre'),
+
+    path('admin-stats/', views.admin_stats_dashboard, name='admin_stats'),
 ]
