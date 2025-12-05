@@ -130,5 +130,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# settings.py
-LOGIN_REDIRECT_URL = 'dispatch_login' # Nom de l'URL qui pointe vers la vue ci-dessus
+# Redirection après connexion (vers votre vue de dispatch qui trie profs/élèves)
+LOGIN_REDIRECT_URL = 'dispatch_login' 
+
+# Redirection après déconnexion (vers la page de login "Agency")
+LOGOUT_REDIRECT_URL = 'login'
