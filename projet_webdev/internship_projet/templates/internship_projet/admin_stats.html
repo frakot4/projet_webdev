@@ -1,0 +1,79 @@
+{% extends 'internship_projet/base.html' %}
+
+{% block title %}Statistiques{% endblock %}
+{% block header_title %}Tableau de Bord{% endblock %}
+{% block header_subtitle %}Statistiques de la plateforme{% endblock %}
+
+{% block content %}
+<section class="page-section bg-light" id="stats">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-md-4">
+                <div class="card p-4 shadow border-0 mb-3">
+                    <h1 class="text-primary fw-bold">{{ total_offres }}</h1>
+                    <p class="text-muted">Offres Reçues (Total)</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 shadow border-0 mb-3">
+                    <h1 class="text-success fw-bold">{{ offres_actives }}</h1>
+                    <p class="text-muted">Offres Actives (Validées)</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 shadow border-0 mb-3">
+                    <h1 class="text-warning fw-bold">{{ total_candidatures }}</h1>
+                    <p class="text-muted">Candidatures totales</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-dark text-white">
+                        <i class="fas fa-chart-line me-2"></i>Évolution des candidatures
+                    </div>
+                    <div class="card-body">
+                        <canvas id="candidatureChart" width="100%" height="40"></canvas>
+                        
+                        {% if not chart_data %}
+                            <p class="text-center text-muted mt-3">Pas assez de données pour afficher le graphique.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Préparation des données Django pour JS
+    const labels = [{% for item in chart_data %}"{{ item.month|date:'M Y' }}",{% endfor %}];
+    const data = [{% for item in chart_data %}{{ item.count }},{% endfor %}];
+
+    const ctx = document.getElementById('candidatureChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Nombre de candidatures',
+                data: data,
+                backgroundColor: 'rgba(255, 200, 0, 0.5)', // Couleur jaune du thème
+                borderColor: 'rgba(255, 200, 0, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

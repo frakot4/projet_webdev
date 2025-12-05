@@ -1,44 +1,64 @@
 {% extends 'internship_projet/base.html' %}
 {% load static %}
 
-{% block title %}Nos Offres{% endblock %}
-{% block header_title %}Opportunités{% endblock %}
-{% block header_subtitle %}Découvrez les dernières offres de stage{% endblock %}
-
 {% block content %}
 <section class="page-section bg-light" id="portfolio">
     <div class="container">
         <div class="text-center">
-            <h2 class="section-heading text-uppercase">Liste des offres</h2>
-            <h3 class="section-subheading text-muted">Postulez dès maintenant.</h3>
+            <h2 class="section-heading text-uppercase">Offres de Stage</h2>
+            <h3 class="section-subheading text-muted">Trouvez le stage qui vous correspond.</h3>
         </div>
+
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8">
+                <form method="GET" action="{% url 'liste_offres' %}">
+                    <div class="input-group input-group-lg">
+                        <input type="text" name="q" class="form-control" 
+                               placeholder="Rechercher par titre ou entreprise..." 
+                               value="{{ search_query|default_if_none:'' }}">
+                        <button class="btn btn-primary" type="submit" id="button-search">
+                            <i class="fas fa-search"></i> Rechercher
+                        </button>
+                        
+                        {% if search_query %}
+                            <a href="{% url 'liste_offres' %}" class="btn btn-secondary" title="Effacer la recherche">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% if search_query %}
+            <div class="text-center mb-4">
+                <p class="text-muted">
+                    {{ offres|length }} résultat(s) pour la recherche "<strong>{{ search_query }}</strong>"
+                </p>
+            </div>
+        {% endif %}
+
         <div class="row">
             {% for offre in offres %}
-            <div class="col-lg-4 col-sm-6 mb-4">
-                <div class="portfolio-item">
-                    <a class="portfolio-link" href="/offres/{{ offre.IDOffre }}/">
-                        <div class="portfolio-hover">
-                            <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                        </div>
-                        <img class="img-fluid" src="{% static 'internship_projet/assets/img/portfolio/1.jpg' %}"
-                            alt="..." />
-                    </a>
-                    <div class="portfolio-caption">
-                        <div class="portfolio-caption-heading">{{ offre.Titre }}</div>
-                        <div class="portfolio-caption-subheading text-muted">{{ offre.Organisme }}</div>
-                        <p class="mt-2 text-primary">{{ offre.Etat }}</p>
-
-                        <div class="btn-group mt-2">
-                            <a href="/offres/{{ offre.IDOffre }}/update/" class="btn btn-warning btn-sm">Modifier</a>
-                            <a href="/offres/{{ offre.IDOffre }}/delete/" class="btn btn-danger btn-sm">Supprimer</a>
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <div class="portfolio-item">
+                        <a class="portfolio-link" href="{% url 'detail_offre' offre.IDOffre %}">
+                            <div class="portfolio-hover">
+                                <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                            </div>
+                            <img class="img-fluid" src="{% static 'internship_projet/assets/img/portfolio/1.jpg' %}" alt="..." />
+                        </a>
+                        <div class="portfolio-caption">
+                            <div class="portfolio-caption-heading">{{ offre.Titre }}</div>
+                            <div class="portfolio-caption-subheading text-muted">{{ offre.Organisme }}</div>
                         </div>
                     </div>
                 </div>
-            </div>
             {% empty %}
-            <div class="col-12 text-center">
-                <p>Aucune offre disponible.</p>
-            </div>
+                <div class="col-12 text-center">
+                    <div class="alert alert-warning">
+                        Aucune offre ne correspond à votre recherche.
+                    </div>
+                </div>
             {% endfor %}
         </div>
     </div>
