@@ -8,6 +8,19 @@
 {% block content %}
 <section class="page-section bg-light" id="offre-detail">
     <div class="container">
+        
+        {% if messages %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} text-center shadow-sm">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="modal-body text-center">
@@ -20,32 +33,63 @@
                     <hr class="mb-5">
 
                     <h4 class="text-uppercase text-primary mb-3">Détail du poste</h4>
-                    <p class="large text-muted mb-5">
-                        {{ offre.Detail }}
+                    <p class="large text-muted mb-5 text-start">
+                        {{ offre.Detail|linebreaks }}
                     </p>
 
-                    <ul class="list-inline my-4">
-                        <li class="list-inline-item mx-4">
-                            <strong class="text-dark">Statut :</strong> 
-                            <span class="badge {% if offre.Etat == 'Validée' %}bg-success{% else %}bg-secondary{% endif %}">
-                                {{ offre.Etat }}
-                            </span>
-                        </li>
-                        <li class="list-inline-item mx-4">
-                            <strong class="text-dark">Contact :</strong> {{ offre.NomContact }}
-                        </li>
-                        <li class="list-inline-item mx-4">
-                            <strong class="text-dark">Email :</strong> {{ offre.EmailContact }}
-                        </li>
-                    </ul>
-
-                    <div class="mt-5">
-                        <button class="btn btn-success btn-xl text-uppercase" onclick="alert('Fonctionnalité Candidature à implémenter !')">
-                            <i class="fas fa-paper-plane me-1"></i> Candidater à ce stage
-                        </button>
+                    <div class="row justify-content-center mb-5">
+                        <div class="col-md-8">
+                            <ul class="list-group list-group-flush text-start shadow-sm">
+                                <li class="list-group-item">
+                                    <i class="fas fa-info-circle me-2 text-primary"></i>
+                                    <strong>Statut :</strong> 
+                                    <span class="badge {% if offre.Etat == 'Validée' %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ offre.Etat }}
+                                    </span>
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fas fa-user me-2 text-primary"></i>
+                                    <strong>Contact :</strong> {{ offre.NomContact }}
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="fas fa-envelope me-2 text-primary"></i>
+                                    <strong>Email :</strong> <a href="mailto:{{ offre.EmailContact }}">{{ offre.EmailContact }}</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <a class="btn btn-link mt-4" href="{% url 'liste_offres' %}">
+                    <div class="mt-5 p-4 bg-white rounded shadow-sm border">
+                        <h5 class="text-muted mb-3">Postuler à cette offre</h5>
+
+                        {% if offre.Etat == 'Clôturée' or offre.NbCandidats >= 5 %}
+                            <button class="btn btn-secondary btn-xl disabled" disabled>
+                                <i class="fas fa-lock me-2"></i> Offre Clôturée (Quota atteint)
+                            </button>
+                            <p class="text-danger mt-2 small">Le nombre maximum de 5 candidats a été atteint.</p>
+
+                        {% elif a_deja_postule %}
+                            <button class="btn btn-success btn-xl disabled" disabled>
+                                <i class="fas fa-check-circle me-2"></i> Vous avez déjà candidaté
+                            </button>
+                            <p class="text-muted mt-2 small">Votre dossier est en cours de traitement.</p>
+
+                        {% else %}
+                            <form action="{% url 'candidater_offre' offre.IDOffre %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary btn-xl text-uppercase">
+                                    <i class="fas fa-paper-plane me-2"></i> Envoyer ma candidature
+                                </button>
+                            </form>
+                            <div class="mt-3">
+                                <span class="badge bg-warning text-dark fs-6">
+                                    Candidats actuels : {{ offre.NbCandidats }} / 5
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <a class="btn btn-link mt-5 text-decoration-none" href="{% url 'liste_offres' %}">
                         <i class="fas fa-arrow-left me-1"></i> Retour à la liste des offres
                     </a>
 

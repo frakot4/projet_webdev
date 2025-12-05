@@ -25,6 +25,8 @@ class Offre(models.Model):
     DateDepot = models.DateTimeField(default=timezone.now, verbose_name="Date de dépôt")
     Etat = models.CharField(max_length=30, choices=ETAT_CHOICES, default='En attente')
 
+    NbCandidats = models.IntegerField(default=0, verbose_name="Nombre de candidats actuels") 
+
     def __str__(self):
         return f"{self.Titre} ({self.Organisme})"
 

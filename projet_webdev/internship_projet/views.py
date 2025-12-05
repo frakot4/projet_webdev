@@ -7,6 +7,7 @@ from django.db.models.functions import TruncMonth
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Offre, Candidature 
 from django.db.models import Q
+from django.contrib import messages
 
 # --- PARTIE PUBLIQUE (Entreprises) ---
 def creer_offre(request):
@@ -42,10 +43,6 @@ def liste_offres(request):
         'search_query': search_query
     })
 
-@login_required
-def detail_offre(request, offre_id):
-    offre = get_object_or_404(Offre, IDOffre=offre_id)
-    return render(request, 'internship_projet/detail_offre.html', {'offre': offre})
 
 # Cette vue est protégée : seul un Admin (staff) peut la voir
 @staff_member_required
@@ -101,3 +98,52 @@ def admin_stats_dashboard(request):
     }
     
     return render(request, 'internship_projet/admin_stats.html', context)
+
+
+
+# --- MODIFICATION DE LA VUE DÉTAIL ---
+@login_required
+def detail_offre(request, offre_id):
+    offre = get_object_or_404(Offre, IDOffre=offre_id)
+    
+    # Vérifier si l'étudiant a déjà postulé pour afficher/masquer le bouton
+    a_deja_postule = False
+    if request.user.is_authenticated:
+        a_deja_postule = Candidature.objects.filter(Offre=offre, Etudiant=request.user).exists()
+
+    return render(request, 'internship_projet/detail_offre.html', {
+        'offre': offre,
+        'a_deja_postule': a_deja_postule
+    })
+
+# --- NOUVELLE VUE : ACTION CANDIDATER ---
+@login_required
+def candidater(request, offre_id):
+    offre = get_object_or_404(Offre, IDOffre=offre_id)
+    etudiant = request.user
+
+    # 1. Vérification : Est-ce déjà complet ?
+    if offre.NbCandidats >= 5:
+        messages.error(request, "Désolé, cette offre a déjà atteint le quota de 5 candidats.")
+        return redirect('detail_offre', offre_id=offre.IDOffre)
+
+    # 2. Vérification : A-t-il déjà postulé ?
+    if Candidature.objects.filter(Offre=offre, Etudiant=etudiant).exists():
+        messages.warning(request, "Vous avez déjà candidaté à cette offre.")
+        return redirect('detail_offre', offre_id=offre.IDOffre)
+
+    # 3. ENREGISTREMENT (Nom étudiant + Date/Heure)
+    # Note: La date est auto_now_add=True dans votre modèle Candidature
+    Candidature.objects.create(Offre=offre, Etudiant=etudiant)
+
+    # 4. INCRÉMENTATION DU COMPTEUR
+    offre.NbCandidats += 1
+    
+    # 5. LOGIQUE MÉTIER : Si on arrive à 5, on clôture l'offre
+    if offre.NbCandidats >= 5:
+        offre.Etat = 'Clôturée'
+    
+    offre.save()
+
+    messages.success(request, "Votre candidature a été enregistrée avec succès !")
+    return redirect('liste_offres')
