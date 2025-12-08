@@ -1,4 +1,5 @@
 {% extends 'internship_projet/base.html' %}
+{% load static %}
 
 {% block title %}Détail de l'offre : {{ offre.Titre }}{% endblock %}
 
@@ -62,7 +63,13 @@
                     <div class="mt-5 p-4 bg-white rounded shadow-sm border">
                         <h5 class="text-muted mb-3">Postuler à cette offre</h5>
 
-                        {% if offre.Etat == 'Clôturée' or offre.NbCandidats >= 5 %}
+                        {% if not is_etudiant %}
+                            <div class="alert alert-info d-inline-block">
+                                <i class="fas fa-info-circle me-2"></i> 
+                                Seuls les étudiants connectés peuvent candidater.
+                            </div>
+
+                        {% elif offre.Etat == 'Clôturée' or offre.NbCandidats >= 5 %}
                             <button class="btn btn-secondary btn-xl disabled" disabled>
                                 <i class="fas fa-lock me-2"></i> Offre Clôturée (Quota atteint)
                             </button>

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required , user_passes_test 
 from .models import Offre
 from .forms import OffreCreationForm
 from django.db.models import Count
@@ -21,6 +21,15 @@ def creer_offre(request):
     return render(request, 'internship_projet/formulaire_creation_offre.html', {'form': form})
 
 # --- PARTIE ÉTUDIANT ---
+
+
+# vérification si l'utilisateur est un étudiant
+def is_etudiant(user):
+    # Un étudiant est quelqu'un qui est dans le groupe 'Etudiants'
+    # ET qui n'est ni prof ni admin (double sécurité)
+    return user.groups.filter(name='Etudiants').exists() and not user.is_superuser
+
+
 @login_required
 def liste_offres(request):
     # 1. On part de la liste de base : Offres validées
@@ -113,11 +122,13 @@ def detail_offre(request, offre_id):
 
     return render(request, 'internship_projet/detail_offre.html', {
         'offre': offre,
-        'a_deja_postule': a_deja_postule
+        'a_deja_postule': a_deja_postule ,
+        'is_etudiant': is_etudiant(request.user)
     })
 
 # --- NOUVELLE VUE : ACTION CANDIDATER ---
 @login_required
+@user_passes_test(is_etudiant)
 def candidater(request, offre_id):
     offre = get_object_or_404(Offre, IDOffre=offre_id)
     etudiant = request.user
