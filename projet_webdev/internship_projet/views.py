@@ -9,15 +9,22 @@ from .models import Offre, Candidature
 from django.db.models import Q
 from django.contrib import messages
 
-# --- PARTIE PUBLIQUE (Entreprises) ---
+
+# --- PARTIE PUBLIQUE (Entreprises uniquement) ---
 def creer_offre(request):
+    # SÉCURITÉ : Si l'utilisateur est déjà connecté (donc Élève ou Prof),
+    # il n'a rien à faire ici. On le redirige vers l'accueil.
+    if request.user.is_authenticated:
+        return redirect('liste_offres')
+
     if request.method == 'POST':
         form = OffreCreationForm(request.POST)
         if form.is_valid():
-            form.save() # Enregistré en "En attente" par défaut
+            form.save()
             return render(request, 'internship_projet/confirmation_creation.html')
     else:
         form = OffreCreationForm()
+    
     return render(request, 'internship_projet/formulaire_creation_offre.html', {'form': form})
 
 # --- PARTIE ÉTUDIANT ---
