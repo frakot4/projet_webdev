@@ -91,13 +91,12 @@ def admin_stats_dashboard(request):
 # --- VUE STATISTIQUES (ADMIN) ---
 @staff_member_required
 def admin_stats_dashboard(request):
-    # 1. Chiffres clés
+    # 1. Chiffres clés existants
     total_offres = Offre.objects.count()
     offres_actives = Offre.objects.filter(Etat='Validée').count()
     total_candidatures = Candidature.objects.count()
     
-    # 2. Données pour le graphique (Candidatures par mois sur les 12 derniers mois)
-    # Note : Si tu n'as pas encore de candidatures, ce graphique sera vide, c'est normal.
+    # 2. Données pour l'histogramme (Candidatures par mois)
     candidatures_par_mois = (
         Candidature.objects
         .annotate(month=TruncMonth('DateCandidature'))
@@ -105,16 +104,25 @@ def admin_stats_dashboard(request):
         .annotate(count=Count('IDCandidature'))
         .order_by('month')
     )
+
+    # 3. NOUVEAU : Données pour le Camembert (Offres par État)
+    # On groupe par "Etat" et on compte les IDs
+    repartition_offres = (
+        Offre.objects
+        .values('Etat')
+        .annotate(count=Count('IDOffre'))
+        .order_by('Etat')
+    )
     
     context = {
         'total_offres': total_offres,
         'offres_actives': offres_actives,
         'total_candidatures': total_candidatures,
         'chart_data': candidatures_par_mois,
+        'pie_data': repartition_offres, # <-- On passe la nouvelle donnée au template
     }
     
     return render(request, 'internship_projet/admin_stats.html', context)
-
 
 
 # --- MODIFICATION DE LA VUE DÉTAIL ---

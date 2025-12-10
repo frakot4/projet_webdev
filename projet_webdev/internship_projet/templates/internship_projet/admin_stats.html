@@ -7,71 +7,108 @@
 {% block content %}
 <section class="page-section bg-light" id="stats">
     <div class="container">
+        
         <div class="row text-center mb-5">
             <div class="col-md-4">
-                <div class="card p-4 shadow border-0 mb-3">
-                    <h1 class="text-primary fw-bold">{{ total_offres }}</h1>
-                    <p class="text-muted">Offres Reçues (Total)</p>
+                <div class="card p-4 shadow border-0 mb-3 bg-primary text-white">
+                    <h1 class="fw-bold">{{ total_offres }}</h1>
+                    <p class="text-white-50">Total des Offres Reçues</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card p-4 shadow border-0 mb-3">
-                    <h1 class="text-success fw-bold">{{ offres_actives }}</h1>
-                    <p class="text-muted">Offres Actives (Validées)</p>
+                <div class="card p-4 shadow border-0 mb-3 bg-success text-white">
+                    <h1 class="fw-bold">{{ offres_actives }}</h1>
+                    <p class="text-white-50">Offres Actives (Validées)</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card p-4 shadow border-0 mb-3">
-                    <h1 class="text-warning fw-bold">{{ total_candidatures }}</h1>
-                    <p class="text-muted">Candidatures totales</p>
+                <div class="card p-4 shadow border-0 mb-3 bg-dark text-white">
+                    <h1 class="fw-bold text-warning">{{ total_candidatures }}</h1>
+                    <p class="text-white-50">Candidatures totales</p>
                 </div>
             </div>
         </div>
 
         <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="card shadow border-0">
-                    <div class="card-header bg-dark text-white">
-                        <i class="fas fa-chart-line me-2"></i>Évolution des candidatures
+            
+            <div class="col-lg-5 mb-4">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-header bg-white fw-bold">
+                        <i class="fas fa-chart-pie me-2 text-primary"></i>État des Offres
+                    </div>
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <div style="width: 300px;">
+                            <canvas id="offresPieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7 mb-4">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-header bg-white fw-bold">
+                        <i class="fas fa-chart-line me-2 text-primary"></i>Évolution des candidatures
                     </div>
                     <div class="card-body">
-                        <canvas id="candidatureChart" width="100%" height="40"></canvas>
-                        
+                        <canvas id="candidatureChart" width="100%" height="50"></canvas>
                         {% if not chart_data %}
-                            <p class="text-center text-muted mt-3">Pas assez de données pour afficher le graphique.</p>
+                            <p class="text-center text-muted mt-3">Pas assez de données pour l'historique.</p>
                         {% endif %}
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Préparation des données Django pour JS
+    // --- 1. GRAPHIQUE HISTOGRAMME (Candidatures) ---
     const labels = [{% for item in chart_data %}"{{ item.month|date:'M Y' }}",{% endfor %}];
     const data = [{% for item in chart_data %}{{ item.count }},{% endfor %}];
 
     const ctx = document.getElementById('candidatureChart').getContext('2d');
-    const myChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Nombre de candidatures',
+                label: 'Candidatures',
                 data: data,
-                backgroundColor: 'rgba(255, 200, 0, 0.5)', // Couleur jaune du thème
+                backgroundColor: 'rgba(255, 200, 0, 0.6)',
                 borderColor: 'rgba(255, 200, 0, 1)',
                 borderWidth: 1
             }]
         },
+        options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+
+    // --- 2. NOUVEAU : CAMEMBERT (Répartition Offres) ---
+    // On récupère les labels (ex: Validée, Refusée) et les données (ex: 5, 2)
+    const pieLabels = [{% for item in pie_data %}"{{ item.Etat }}",{% endfor %}];
+    const pieCounts = [{% for item in pie_data %}{{ item.count }},{% endfor %}];
+
+    const ctxPie = document.getElementById('offresPieChart').getContext('2d');
+    new Chart(ctxPie, {
+        type: 'doughnut', // 'pie' pour camembert plein, 'doughnut' pour anneau
+        data: {
+            labels: pieLabels,
+            datasets: [{
+                data: pieCounts,
+                backgroundColor: [
+                    '#ffc107', // Jaune (En attente)
+                    '#198754', // Vert (Validée)
+                    '#dc3545', // Rouge (Refusée)
+                    '#6c757d'  // Gris (Clôturée)
+                ],
+                hoverOffset: 4
+            }]
+        },
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { stepSize: 1 }
-                }
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
             }
         }
     });

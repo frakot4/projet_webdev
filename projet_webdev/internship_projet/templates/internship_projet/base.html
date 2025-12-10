@@ -54,10 +54,16 @@
                                 </a>
                             </li>
 
-                            {% if user.is_superuser %}
+                           {% if user.is_superuser %}
                             <li class="nav-item">
                                 <a class="nav-link text-warning" href="{% url 'admin_stats' %}">
                                     <i class="fas fa-chart-bar me-1"></i>Statistiques
+                                </a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="/admin/">
+                                    <i class="fas fa-tools me-1"></i> Interface Admin
                                 </a>
                             </li>
                             {% endif %}

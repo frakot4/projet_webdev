@@ -34,13 +34,16 @@
                     <hr class="mb-5">
 
                     <h4 class="text-uppercase text-primary mb-3">Détail du poste</h4>
-                    <p class="large text-muted mb-5 text-start">
-                        {{ offre.Detail|linebreaks }}
-                    </p>
+                    
+                    <div class="text-start p-4 mb-5 border rounded bg-white shadow-sm">
+                        <p class="large text-muted mb-0">
+                            {{ offre.Detail|linebreaks }}
+                        </p>
+                    </div>
 
                     <div class="row justify-content-center mb-5">
                         <div class="col-md-8">
-                            <ul class="list-group list-group-flush text-start shadow-sm">
+                            <ul class="list-group list-group-flush text-start shadow-sm rounded">
                                 <li class="list-group-item">
                                     <i class="fas fa-info-circle me-2 text-primary"></i>
                                     <strong>Statut :</strong> 
@@ -64,7 +67,7 @@
                         <h5 class="text-muted mb-3">Postuler à cette offre</h5>
 
                         {% if not is_etudiant %}
-                            <div class="alert alert-info d-inline-block">
+                            <div class="alert alert-info d-inline-block mb-0">
                                 <i class="fas fa-info-circle me-2"></i> 
                                 Seuls les étudiants connectés peuvent candidater.
                             </div>
@@ -73,13 +76,13 @@
                             <button class="btn btn-secondary btn-xl disabled" disabled>
                                 <i class="fas fa-lock me-2"></i> Offre Clôturée (Quota atteint)
                             </button>
-                            <p class="text-danger mt-2 small">Le nombre maximum de 5 candidats a été atteint.</p>
+                            <p class="text-danger mt-2 small mb-0">Le nombre maximum de 5 candidats a été atteint.</p>
 
                         {% elif a_deja_postule %}
                             <button class="btn btn-success btn-xl disabled" disabled>
                                 <i class="fas fa-check-circle me-2"></i> Vous avez déjà candidaté
                             </button>
-                            <p class="text-muted mt-2 small">Votre dossier est en cours de traitement.</p>
+                            <p class="text-muted mt-2 small mb-0">Votre dossier est en cours de traitement.</p>
 
                         {% else %}
                             <form action="{% url 'candidater_offre' offre.IDOffre %}" method="POST">
