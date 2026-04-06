@@ -14,16 +14,18 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. Copier tout le reste du code
+# 5. Copier tout le reste du code dans /app
 COPY . .
 
-# 6. Variables d'environnement par défaut
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV PORT 8080
+# 6. Variables d'environnement
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PORT=8080
+# Cette ligne est CRUCIALE pour que Python trouve tes modules
+ENV PYTHONPATH=/app/projet_webdev
 
-# 7. Collecter les fichiers statiques et lancer les migrations + le serveur
-# Note : on ajuste le chemin vers manage.py car ton code est dans le sous-dossier projet_webdev
+# 7. Collecter les fichiers statiques, migrer et lancer Gunicorn
+# On se déplace dans /app/projet_webdev pour exécuter les commandes
 CMD python projet_webdev/manage.py collectstatic --noinput && \
     python projet_webdev/manage.py migrate && \
-    gunicorn --bind 0.0.0.0:$PORT projet_webdev.wsgi
+    gunicorn --bind 0.0.0.0:$PORT --chdir /app/projet_webdev projet_webdev.wsgi
