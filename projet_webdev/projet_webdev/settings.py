@@ -8,7 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Charge le fichier .env créé par Dokploy (situé un dossier au-dessus de projet_webdev)
 load_dotenv(BASE_DIR.parent / '.env') # <-- Ajoute ceci
 
-# --- CONFIGURATION DÉPLOIEMENT (DOKPLOY) ---
+  
+'''     ANCIENNE VERSION (utilisation des variables sur  dokploy)
+  # --- CONFIGURATION DÉPLOIEMENT (DOKPLOY) ---
 
 # On récupère la SECRET_KEY depuis Dokploy, sinon on utilise une clé de secours locale
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-iyfpw$qiurz&7gwczv+t1x72dcl+3p#6e5n+=w+!y2!&41qzvt')
@@ -18,6 +20,19 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # On récupère les domaines autorisés (IP + Nom de domaine) configurés dans Dokploy
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+
+'''
+
+# --- CONFIGURATION DÉPLOIEMENT ---
+
+# Force le mode Debug pour voir l'erreur exacte si elle existe
+DEBUG = True
+
+# Autorise absolument TOUTES les connexions (L'étoile magique)
+ALLOWED_HOSTS = ['*']
+
+# On garde la ligne de la clé secrète avec une valeur par défaut au cas où
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3yg!m&*g6@jys#essj@1rklz)^-e7c$h5i*3g)l4s-7d^gfyy%')
 
 
 # --- APPLICATION DEFINITION ---
