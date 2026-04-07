@@ -12,7 +12,7 @@ load_dotenv(BASE_DIR.parent / '.env')
 # --- CONFIGURATION DÉPLOIEMENT (SÉCURISÉE) ---
 
 # On récupère la SECRET_KEY depuis Dokploy, sinon clé de secours
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3yg!m&*g6@jys#essj@1rklz)^-e7c$h5i*3g)l4s-7d^gfyy%')
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # DEBUG lit la variable 'False' de Dokploy
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
