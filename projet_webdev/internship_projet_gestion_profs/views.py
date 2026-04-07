@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from internship_projet.models import Offre
 from internship_projet.forms import OffreModificationForm 
 
-# Test de sécurité : Doit être dans le groupe 'Profs'
+# Test de sécurité : Doit être dans le groupe 'Profs' ou être superuser
 def is_prof(user):
-    return user.groups.filter(name='Profs').exists()
+    return user.is_superuser or user.groups.filter(name='Profs').exists()
 
 @login_required
 @user_passes_test(is_prof)
