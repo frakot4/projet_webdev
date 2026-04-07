@@ -1,8 +1,12 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv  # <-- Ajoute ceci
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Charge le fichier .env créé par Dokploy (situé un dossier au-dessus de projet_webdev)
+load_dotenv(BASE_DIR.parent / '.env') # <-- Ajoute ceci
 
 # --- CONFIGURATION DÉPLOIEMENT (DOKPLOY) ---
 
