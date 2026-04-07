@@ -63,14 +63,19 @@ WSGI_APPLICATION = 'projet_webdev.wsgi.application'
 
 
 # --- DATABASE ---
-# Utilisation de SQLite par défaut (le fichier db.sqlite3 sera créé sur le serveur)
+# 1. On définit un dossier 'data' à la racine du projet
+DATA_DIR = BASE_DIR / 'data'
+
+# 2. On demande à Python de créer ce dossier s'il n'existe pas encore
+os.makedirs(DATA_DIR, exist_ok=True)
+
+# 3. On range le fichier SQLite à l'intérieur
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATA_DIR / 'db.sqlite3',
     }
 }
-
 
 # --- PASSWORD VALIDATION ---
 AUTH_PASSWORD_VALIDATORS = [
