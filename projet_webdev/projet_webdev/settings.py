@@ -1,38 +1,27 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv  # <-- Ajoute ceci
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Charge le fichier .env créé par Dokploy (situé un dossier au-dessus de projet_webdev)
-load_dotenv(BASE_DIR.parent / '.env') # <-- Ajoute ceci
+# On charge le fichier .env créé par Dokploy au moment du build
+load_dotenv(BASE_DIR.parent / '.env')
 
-  
-'''     ANCIENNE VERSION (utilisation des variables sur  dokploy)
-  # --- CONFIGURATION DÉPLOIEMENT (DOKPLOY) ---
 
-# On récupère la SECRET_KEY depuis Dokploy, sinon on utilise une clé de secours locale
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-iyfpw$qiurz&7gwczv+t1x72dcl+3p#6e5n+=w+!y2!&41qzvt')
+# --- CONFIGURATION DÉPLOIEMENT (SÉCURISÉE) ---
 
-# DEBUG est True sur ton PC, mais devient False sur le serveur (via la variable DEBUG dans Dokploy)
+# On récupère la SECRET_KEY depuis Dokploy, sinon clé de secours
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3yg!m&*g6@jys#essj@1rklz)^-e7c$h5i*3g)l4s-7d^gfyy%')
+
+# DEBUG lit la variable 'False' de Dokploy
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-# On récupère les domaines autorisés (IP + Nom de domaine) configurés dans Dokploy
+# On récupère les domaines autorisés configurés dans Dokploy
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
-'''
-
-# --- CONFIGURATION DÉPLOIEMENT ---
-
-# Force le mode Debug pour voir l'erreur exacte si elle existe
-DEBUG = True
-
-# Autorise absolument TOUTES les connexions (L'étoile magique)
-ALLOWED_HOSTS = ['*']
-
-# On garde la ligne de la clé secrète avec une valeur par défaut au cas où
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3yg!m&*g6@jys#essj@1rklz)^-e7c$h5i*3g)l4s-7d^gfyy%')
+# Indispensable pour autoriser la connexion admin en HTTPS derrière Dokploy
+CSRF_TRUSTED_ORIGINS = ['https://rakotomavofanatitra.dev']
 
 
 # --- APPLICATION DEFINITION ---
@@ -43,7 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',  # Ajouté pour gérer les fichiers statiques (CSS/JS)
+    'whitenoise.runserver_nostatic',  # Gère les fichiers statiques en prod
     'django.contrib.staticfiles',
     'internship_projet',
     'internship_projet_comptes', 
@@ -52,7 +41,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Ajouté : Indispensable pour le CSS en production
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Indispensable pour le CSS
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,7 +70,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'projet_webdev.wsgi.application'
 
 
-# --- DATABASE ---
+# --- DATABASE (SQLite + PVC Dokploy) ---
+
 # 1. On définit un dossier 'data' à la racine du projet
 DATA_DIR = BASE_DIR / 'data'
 
@@ -96,7 +86,9 @@ DATABASES = {
     }
 }
 
+
 # --- PASSWORD VALIDATION ---
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -106,6 +98,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # --- INTERNATIONALIZATION ---
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -113,16 +106,14 @@ USE_TZ = True
 
 
 # --- STATIC FILES (CSS, JavaScript, Images) ---
+
 STATIC_URL = '/static/'
-
-# Dossier où Django va rassembler tous les fichiers statiques pour la production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Configuration WhiteNoise pour servir les fichiers compressés (plus rapide)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # --- MEDIA FILES (Images uploadées) ---
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -130,5 +121,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # --- REDIRECTIONS ---
+
 LOGIN_REDIRECT_URL = 'dispatch_login' 
 LOGOUT_REDIRECT_URL = 'login'
