@@ -72,20 +72,17 @@ WSGI_APPLICATION = 'projet_webdev.wsgi.application'
 
 # --- DATABASE (SQLite + PVC Dokploy) ---
 
-# 1. On définit un dossier 'data' à la racine du projet
-DATA_DIR = BASE_DIR / 'data'
+# --- DATABASE (SQLite + PVC Dokploy) ---
 
-# 2. On demande à Python de créer ce dossier s'il n'existe pas encore
-os.makedirs(DATA_DIR, exist_ok=True)
+# --- DATABASE (SQLite + PVC Dokploy) ---
 
-# 3. On range le fichier SQLite à l'intérieur
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': DATA_DIR / 'db.sqlite3',
+        # BASE_DIR correspond à /app/projet_webdev dans ton conteneur
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # --- PASSWORD VALIDATION ---
 
