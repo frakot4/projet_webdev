@@ -20,11 +20,12 @@ COPY . .
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
-# Cette ligne est CRUCIALE pour que Python trouve tes modules
 ENV PYTHONPATH=/app/projet_webdev
 
-# 7. Collecter les fichiers statiques, migrer et lancer Gunicorn
-# On se déplace dans /app/projet_webdev pour exécuter les commandes
-CMD python projet_webdev/manage.py collectstatic --noinput && \
-    python projet_webdev/manage.py migrate && \
-    gunicorn --bind 0.0.0.0:$PORT --chdir /app/projet_webdev projet_webdev.wsgi
+# Changement de dossier : On se place explicitement là où se trouve la vraie base de données
+WORKDIR /app/projet_webdev
+
+# 7. Collecter les fichiers statiques, migrer et lancer Gunicorn (plus besoin de préciser les chemins)
+CMD python manage.py collectstatic --noinput && \
+    python manage.py migrate && \
+    gunicorn --bind 0.0.0.0:$PORT projet_webdev.wsgi
